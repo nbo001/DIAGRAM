@@ -1,369 +1,693 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Be My Valentine? 💕</title>
+    <title>Réseau Potentiel-Tâches - Villa R+1</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;700&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            position: relative;
+            padding: 2rem;
+            overflow-x: auto;
         }
-
-        /* Floating hearts background */
-        .heart-bg {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: 1;
-        }
-
-        .heart {
-            position: absolute;
-            font-size: 30px;
-            animation: float 6s infinite ease-in-out;
-            opacity: 0.6;
-        }
-
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(100vh) rotate(0deg);
-                opacity: 0;
-            }
-            50% {
-                opacity: 0.6;
-            }
-            100% {
-                transform: translateY(-100vh) rotate(360deg);
-            }
-        }
-
+        
         .container {
-            text-align: center;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 60px 40px;
-            border-radius: 30px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 500px;
-            width: 90%;
-            position: relative;
-            z-index: 2;
-            animation: slideIn 0.8s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: scale(0.5);
-                opacity: 0;
-            }
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        .question-screen {
-            display: block;
-        }
-
-        .celebration-screen {
-            display: none;
-        }
-
-        h1 {
-            font-size: 2.5em;
-            color: #e91e63;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.05);
-            }
-        }
-
-        .emoji {
-            font-size: 5em;
-            margin: 20px 0;
-            animation: bounce 1s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-20px);
-            }
-        }
-
-        .buttons {
-            margin-top: 40px;
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-            position: relative;
-            min-height: 70px;
-        }
-
-        button {
-            padding: 15px 40px;
-            font-size: 1.3em;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .yes-btn {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-        }
-
-        .yes-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(245, 87, 108, 0.4);
-        }
-
-        .no-btn {
-            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-            color: #666;
-            position: absolute;
-            transition: all 0.3s ease;
-        }
-
-        .no-btn:hover {
-            transform: scale(1.05);
-        }
-
-        /* Celebration styles */
-        .celebration-screen h1 {
-            font-size: 3em;
-            color: #e91e63;
-            margin-bottom: 30px;
-        }
-
-        .gif-container {
-            margin: 30px 0;
-            animation: zoomIn 0.5s ease-out;
-        }
-
-        @keyframes zoomIn {
-            from {
-                transform: scale(0);
-                opacity: 0;
-            }
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        .gif-container img {
             max-width: 100%;
+            background: rgba(255, 255, 255, 0.98);
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            padding: 2rem;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
+        }
+        
+        h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3rem;
+            background: linear-gradient(135deg, #1e3c72, #7e22ce);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            letter-spacing: 2px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #1e3c72 0%, #7e22ce 100%);
+            color: white;
+            border: none;
+            padding: 0.85rem 1.8rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(126, 34, 206, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(126, 34, 206, 0.5);
+        }
+        
+        #network-container {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            padding: 2rem;
+            overflow-x: auto;
+            position: relative;
+            min-height: 700px;
+            border: 3px solid #cbd5e0;
+        }
+        
+        svg {
+            display: block;
+            margin: 0 auto;
+        }
+        
+        .node {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .node:hover {
+            transform: scale(1.08);
+            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.2));
+        }
+        
+        .node-rect {
+            fill: white;
+            stroke: #2563eb;
+            stroke-width: 3;
+            filter: drop-shadow(0 3px 10px rgba(37, 99, 235, 0.25));
+            transition: all 0.3s ease;
+        }
+        
+        .node:hover .node-rect {
+            fill: #eff6ff;
+            stroke: #1d4ed8;
+            stroke-width: 4;
+        }
+        
+        .critical-path .node-rect {
+            fill: #fee2e2;
+            stroke: #dc2626;
+            stroke-width: 4;
+            filter: drop-shadow(0 4px 12px rgba(220, 38, 38, 0.4));
+        }
+        
+        .node-id {
+            font-size: 16px;
+            font-weight: 800;
+            fill: #1e3c72;
+            font-family: 'Bebas Neue', sans-serif;
+        }
+        
+        .node-name {
+            font-size: 10px;
+            font-weight: 600;
+            fill: #334155;
+        }
+        
+        .node-info {
+            font-size: 9px;
+            font-weight: 600;
+            fill: #64748b;
+        }
+        
+        .node-dates {
+            font-size: 11px;
+            font-weight: 700;
+            fill: #7e22ce;
+        }
+        
+        .arrow {
+            fill: none;
+            stroke: #94a3b8;
+            stroke-width: 2.5;
+            marker-end: url(#arrowhead);
+            transition: all 0.3s ease;
+        }
+        
+        .arrow:hover {
+            stroke: #2563eb;
+            stroke-width: 4;
+        }
+        
+        .critical-path .arrow {
+            stroke: #dc2626;
+            stroke-width: 4;
+            marker-end: url(#arrowhead-critical);
+        }
+        
+        .arrow-label {
+            font-size: 10px;
+            font-weight: 700;
+            fill: #059669;
+            background: white;
+            padding: 2px 4px;
+        }
+        
+        .legend {
+            display: flex;
+            gap: 2.5rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #334155;
+        }
+        
+        .legend-box {
+            width: 35px;
+            height: 25px;
+            border-radius: 6px;
+            border: 3px solid;
+        }
+        
+        .info-panel {
+            background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+            border-left: 6px solid #2563eb;
+        }
+        
+        .info-panel h3 {
+            color: #1e293b;
+            margin-bottom: 1.5rem;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.2rem;
+        }
+        
+        .stat-item {
+            background: white;
+            padding: 1.3rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid #7e22ce;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-bottom: 0.4rem;
+            font-weight: 600;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1e3c72, #7e22ce);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .celebration-text {
-            font-size: 1.5em;
-            color: #e91e63;
-            margin-top: 20px;
-            font-weight: bold;
-            animation: rainbow 3s infinite;
-        }
-
-        @keyframes rainbow {
-            0% { color: #e91e63; }
-            25% { color: #9c27b0; }
-            50% { color: #2196f3; }
-            75% { color: #4caf50; }
-            100% { color: #e91e63; }
-        }
-
-        /* Confetti */
-        .confetti {
+        .tooltip {
             position: absolute;
-            width: 10px;
-            height: 10px;
-            background: #f50057;
-            animation: confetti-fall 3s linear infinite;
+            background: rgba(15, 23, 42, 0.95);
+            color: white;
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+            max-width: 320px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 2px solid #7e22ce;
         }
 
-        @keyframes confetti-fall {
-            to {
-                transform: translateY(100vh) rotate(360deg);
-                opacity: 0;
-            }
+        .tooltip.show {
+            opacity: 1;
         }
 
-        @media (max-width: 600px) {
-            .container {
-                padding: 40px 20px;
-            }
-
-            h1 {
-                font-size: 2em;
-            }
-
-            .emoji {
-                font-size: 4em;
-            }
-
-            button {
-                padding: 12px 30px;
-                font-size: 1.1em;
-            }
+        .tooltip strong {
+            color: #fbbf24;
         }
     </style>
 </head>
 <body>
-    <!-- Floating hearts background -->
-    <div class="heart-bg" id="heartBg"></div>
-
     <div class="container">
-        <!-- Question Screen -->
-        <div class="question-screen" id="questionScreen">
-            <h1>Be My Valentine? 💕</h1>
-            <div class="emoji">🥰</div>
-            <p style="font-size: 1.2em; color: #666; margin: 20px 0;">
-                Will you be my Valentine this year?
-            </p>
-            <div class="buttons">
-                <button class="yes-btn" onclick="sayYes()">Yes! 💖</button>
-                <button class="no-btn" id="noBtn" onmouseover="moveButton()" ontouchstart="moveButton()">No 😢</button>
+        <h1>Réseau Potentiel-Tâches</h1>
+        <p class="subtitle">Étude et Conception d'une Villa R+1 - Badie AYEB - PFF 2025-2026</p>
+        
+        <div class="controls">
+            <button onclick="toggleCriticalPath()">🎯 Chemin Critique</button>
+            <button onclick="zoomIn()">🔍 Zoom +</button>
+            <button onclick="zoomOut()">🔍 Zoom -</button>
+            <button onclick="resetView()">↻ Réinitialiser</button>
+        </div>
+        
+        <div id="network-container">
+            <svg id="network" width="3200" height="1800"></svg>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-box" style="background: white; border-color: #2563eb;"></div>
+                <span>Tâche normale</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background: #fee2e2; border-color: #dc2626;"></div>
+                <span>Chemin critique (MT = 0)</span>
+            </div>
+            <div class="legend-item">
+                <div style="background: #1e3c72; color: white; padding: 4px 10px; border-radius: 5px; font-weight: 800; font-size: 0.8rem; border: 2.5px solid #7e22ce;">T08 FD T09</div>
+                <span>Lien Fin-Début entre tâches</span>
+            </div>
+            <div class="legend-item">
+                <div style="background: white; color: #059669; padding: 4px 8px; border-radius: 5px; font-weight: 800; font-size: 0.85rem; border: 2.5px solid #059669;">+3j</div>
+                <span>Décalage (jours)</span>
+            </div>
+            <div class="legend-item">
+                <div style="font-weight: 800; color: #7e22ce; font-size: 1.1rem;">MT</div>
+                <span>Marge Totale</span>
+            </div>
+            <div class="legend-item">
+                <div style="font-weight: 800; color: #7e22ce; font-size: 1.1rem;">ML</div>
+                <span>Marge Libre</span>
             </div>
         </div>
-
-        <!-- Celebration Screen -->
-        <div class="celebration-screen" id="celebrationScreen">
-            <h1>YAAAY! 🎉</h1>
-            <div class="gif-container">
-                <img src="https://media.giphy.com/media/g5R9dok94mrIvplmZd/giphy.gif" alt="Happy celebration">
-            </div>
-            <p class="celebration-text">
-                I knew you'd say yes! 💕<br>
-                You just made me the happiest! 🥳
-            </p>
-            <div style="margin-top: 30px; font-size: 3em;">
-                😍 💖 🎊 ✨ 💝
+        
+        <div class="info-panel">
+            <h3>📊 Statistiques du Projet</h3>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-label">Durée totale du projet</div>
+                    <div class="stat-value" id="total-duration">-</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Nombre de tâches</div>
+                    <div class="stat-value">26</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Tâches critiques</div>
+                    <div class="stat-value" id="critical-tasks">-</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Effectif maximal</div>
+                    <div class="stat-value">5 personnes</div>
+                </div>
             </div>
         </div>
     </div>
 
+    <div class="tooltip" id="tooltip"></div>
+
     <script>
-        // Create floating hearts
-        function createHearts() {
-            const heartBg = document.getElementById('heartBg');
-            const heartSymbols = ['💕', '💖', '💗', '💝', '❤️', '💘'];
-            
-            for (let i = 0; i < 15; i++) {
-                const heart = document.createElement('div');
-                heart.className = 'heart';
-                heart.innerHTML = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
-                heart.style.left = Math.random() * 100 + '%';
-                heart.style.animationDelay = Math.random() * 5 + 's';
-                heart.style.fontSize = (Math.random() * 20 + 20) + 'px';
-                heartBg.appendChild(heart);
+        const tasks = [
+            {id: 1, name: "Décapage terrain", duration: 1, effectif: 1, next: [2], delay: 0},
+            {id: 2, name: "Fouilles puits/rigoles", duration: 1, effectif: 2, next: [3], delay: 0},
+            {id: 3, name: "Gros béton", duration: 1, effectif: 3, next: [4], delay: 0},
+            {id: 4, name: "Béton propreté", duration: 1, effectif: 3, next: [5], delay: 0},
+            {id: 5, name: "B.A fondation", duration: 3, effectif: 3, next: [6], delay: 0},
+            {id: 6, name: "Chape armée", duration: 6, effectif: 5, next: [7], delay: 0},
+            {id: 7, name: "B.A élév. RDC", duration: 6, effectif: 5, next: [8], delay: 0},
+            {id: 8, name: "Plancher RDC", duration: 15, effectif: 5, next: [9], delay: 3},
+            {id: 9, name: "Escalier RDC", duration: 2, effectif: 5, next: [10], delay: 0},
+            {id: 10, name: "B.A élév. étage", duration: 6, effectif: 5, next: [11], delay: 0},
+            {id: 11, name: "Plancher étage", duration: 12, effectif: 5, next: [12], delay: 3},
+            {id: 12, name: "Escalier étage", duration: 2, effectif: 5, next: [13], delay: 0},
+            {id: 13, name: "Maçonnerie", duration: 30, effectif: 5, next: [14], delay: -15},
+            {id: 14, name: "Enduit intérieur", duration: 30, effectif: 5, next: [15], delay: -5},
+            {id: 15, name: "Enduit extérieur", duration: 15, effectif: 5, next: [16], delay: 7},
+            {id: 16, name: "Pose Staff", duration: 30, effectif: 2, next: [17], delay: 3},
+            {id: 17, name: "Acrotère", duration: 2, effectif: 2, next: [18], delay: 0},
+            {id: 18, name: "Étanchéité", duration: 1, effectif: 3, next: [19], delay: 0},
+            {id: 19, name: "Forme de pente", duration: 1, effectif: 3, next: [20], delay: 0},
+            {id: 20, name: "Revêtement", duration: 30, effectif: 5, next: [21], delay: -10},
+            {id: 21, name: "Seuils/appuis", duration: 1, effectif: 4, next: [22], delay: 0},
+            {id: 22, name: "Menuiserie pose", duration: 3, effectif: 4, next: [23, 24], delay: 0},
+            {id: 23, name: "Électricité", duration: 8, effectif: 4, next: [25], delay: 0},
+            {id: 24, name: "Plomberie", duration: 6, effectif: 4, next: [25], delay: 0},
+            {id: 25, name: "Peinture", duration: 35, effectif: 4, next: [26], delay: 0},
+            {id: 26, name: "Nettoyage", duration: 3, effectif: 2, next: [], delay: 0}
+        ];
+
+        let showCritical = false;
+        let currentScale = 1;
+        let criticalPath = [];
+        
+        function calculateDates() {
+            tasks.forEach(task => {
+                task.earlyStart = 0;
+                task.earlyFinish = 0;
+                task.lateStart = 0;
+                task.lateFinish = 0;
+                task.slack = 0;
+                task.freeSlack = 0;
+            });
+
+            // Calcul au plus tôt (DTO)
+            tasks.forEach(task => {
+                task.earlyFinish = task.earlyStart + task.duration;
+                
+                task.next.forEach(nextId => {
+                    const nextTask = tasks.find(t => t.id === nextId);
+                    const delay = task.delay || 0;
+                    const earlyStart = task.earlyFinish + delay;
+                    if (earlyStart > nextTask.earlyStart) {
+                        nextTask.earlyStart = earlyStart;
+                    }
+                });
+            });
+
+            // Recalcul des fins au plus tôt
+            tasks.forEach(task => {
+                task.earlyFinish = task.earlyStart + task.duration;
+            });
+
+            // Calcul au plus tard (DTA)
+            const lastTask = tasks[tasks.length - 1];
+            lastTask.lateFinish = lastTask.earlyFinish;
+            lastTask.lateStart = lastTask.lateFinish - lastTask.duration;
+
+            for (let i = tasks.length - 2; i >= 0; i--) {
+                const task = tasks[i];
+                if (task.next.length === 0) {
+                    task.lateFinish = lastTask.lateFinish;
+                } else {
+                    task.lateFinish = Math.min(...task.next.map(nextId => {
+                        const nextTask = tasks.find(t => t.id === nextId);
+                        const delay = task.delay || 0;
+                        return nextTask.lateStart - delay;
+                    }));
+                }
+                task.lateStart = task.lateFinish - task.duration;
+                task.slack = task.lateStart - task.earlyStart;
             }
+
+            // Calcul de la marge libre
+            tasks.forEach(task => {
+                if (task.next.length === 0) {
+                    task.freeSlack = task.slack;
+                } else {
+                    const minNextEarlyStart = Math.min(...task.next.map(nextId => {
+                        const nextTask = tasks.find(t => t.id === nextId);
+                        const delay = task.delay || 0;
+                        return nextTask.earlyStart - delay;
+                    }));
+                    task.freeSlack = minNextEarlyStart - task.earlyFinish;
+                }
+            });
+
+            // Identifier le chemin critique
+            criticalPath = tasks.filter(t => t.slack === 0).map(t => t.id);
+            
+            return lastTask.earlyFinish;
         }
 
-        createHearts();
+        function drawNetwork() {
+            const svg = document.getElementById('network');
+            const width = 3200;
+            const height = 1800;
+            
+            svg.innerHTML = `
+                <defs>
+                    <marker id="arrowhead" markerWidth="12" markerHeight="12" refX="10" refY="4" orient="auto">
+                        <polygon points="0 0, 12 4, 0 8" fill="#94a3b8" />
+                    </marker>
+                    <marker id="arrowhead-critical" markerWidth="12" markerHeight="12" refX="10" refY="4" orient="auto">
+                        <polygon points="0 0, 12 4, 0 8" fill="#dc2626" />
+                    </marker>
+                </defs>
+            `;
 
-        // Move No button away from cursor
-        function moveButton() {
-            const noBtn = document.getElementById('noBtn');
-            const container = document.querySelector('.buttons');
-            const containerRect = container.getBoundingClientRect();
-            
-            // Random position within reasonable bounds
-            const maxX = containerRect.width - noBtn.offsetWidth - 20;
-            const maxY = 100;
-            
-            const randomX = Math.random() * maxX;
-            const randomY = Math.random() * maxY - 50;
-            
-            noBtn.style.left = randomX + 'px';
-            noBtn.style.top = randomY + 'px';
-            
-            // Make Yes button slightly bigger each time
-            const yesBtn = document.querySelector('.yes-btn');
-            const currentScale = parseFloat(yesBtn.dataset.scale || '1');
-            const newScale = Math.min(currentScale + 0.1, 1.5);
-            yesBtn.dataset.scale = newScale;
-            yesBtn.style.transform = `scale(${newScale})`;
-        }
+            // Disposition optimisée avec espacement
+            const positions = {
+                1: {x: 80, y: 100}, 2: {x: 280, y: 100}, 3: {x: 480, y: 100}, 
+                4: {x: 680, y: 100}, 5: {x: 880, y: 100}, 6: {x: 1080, y: 100},
+                7: {x: 1280, y: 100}, 8: {x: 1480, y: 100}, 9: {x: 1730, y: 100},
+                10: {x: 1930, y: 100}, 11: {x: 2130, y: 100}, 12: {x: 2380, y: 100},
+                13: {x: 2580, y: 250}, 14: {x: 2780, y: 400}, 15: {x: 2580, y: 600},
+                16: {x: 2380, y: 800}, 17: {x: 2180, y: 1000}, 18: {x: 1980, y: 1150},
+                19: {x: 1780, y: 1300}, 20: {x: 1480, y: 1450}, 21: {x: 1180, y: 1500},
+                22: {x: 930, y: 1450}, 23: {x: 680, y: 1350}, 24: {x: 680, y: 1550},
+                25: {x: 430, y: 1450}, 26: {x: 180, y: 1450}
+            };
 
-        // Handle Yes button click
-        function sayYes() {
-            const questionScreen = document.getElementById('questionScreen');
-            const celebrationScreen = document.getElementById('celebrationScreen');
-            
-            questionScreen.style.display = 'none';
-            celebrationScreen.style.display = 'block';
-            
-            // Create confetti
-            createConfetti();
-            
-            // Play celebration sound effect (optional - browser may block without user interaction)
-            playSound();
-        }
-
-        // Create confetti animation
-        function createConfetti() {
-            const colors = ['#f50057', '#e91e63', '#9c27b0', '#2196f3', '#4caf50', '#ffeb3b', '#ff9800'];
-            const container = document.querySelector('.container');
-            
-            for (let i = 0; i < 50; i++) {
-                setTimeout(() => {
-                    const confetti = document.createElement('div');
-                    confetti.className = 'confetti';
-                    confetti.style.left = Math.random() * 100 + '%';
-                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
-                    confetti.style.animationDelay = Math.random() * 3 + 's';
-                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
-                    document.body.appendChild(confetti);
+            // Dessiner les flèches avec labels de décalage et type de lien
+            tasks.forEach(task => {
+                const pos1 = positions[task.id];
+                task.next.forEach(nextId => {
+                    const pos2 = positions[nextId];
+                    const isCritical = showCritical && criticalPath.includes(task.id) && criticalPath.includes(nextId);
                     
-                    setTimeout(() => confetti.remove(), 5000);
-                }, i * 50);
-            }
+                    const path = `M ${pos1.x + 80} ${pos1.y + 50} L ${pos2.x} ${pos2.y + 50}`;
+                    const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    arrow.setAttribute('d', path);
+                    arrow.setAttribute('class', isCritical ? 'arrow critical-path' : 'arrow');
+                    svg.appendChild(arrow);
+                    
+                    const midX = (pos1.x + 80 + pos2.x) / 2;
+                    const midY = (pos1.y + 50 + pos2.y + 50) / 2;
+                    
+                    // Label de liaison entre tâches (ex: T08 FD T09)
+                    const linkText = `T${String(task.id).padStart(2, '0')} FD T${String(nextId).padStart(2, '0')}`;
+                    
+                    const linkBg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                    const linkTextWidth = linkText.length * 6.5;
+                    linkBg.setAttribute('x', midX - linkTextWidth/2 - 4);
+                    linkBg.setAttribute('y', midY - 27);
+                    linkBg.setAttribute('width', linkTextWidth + 8);
+                    linkBg.setAttribute('height', 18);
+                    linkBg.setAttribute('rx', 5);
+                    linkBg.setAttribute('fill', '#1e3c72');
+                    linkBg.setAttribute('stroke', '#7e22ce');
+                    linkBg.setAttribute('stroke-width', 2.5);
+                    svg.appendChild(linkBg);
+                    
+                    const linkLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    linkLabel.setAttribute('x', midX);
+                    linkLabel.setAttribute('y', midY - 14);
+                    linkLabel.setAttribute('text-anchor', 'middle');
+                    linkLabel.setAttribute('style', 'font-size: 10px; font-weight: 800; fill: white;');
+                    linkLabel.textContent = linkText;
+                    svg.appendChild(linkLabel);
+                    
+                    // Afficher le décalage s'il existe
+                    if (task.delay && task.delay !== 0) {
+                        const labelBg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                        labelBg.setAttribute('x', midX - 20);
+                        labelBg.setAttribute('y', midY - 5);
+                        labelBg.setAttribute('width', 40);
+                        labelBg.setAttribute('height', 18);
+                        labelBg.setAttribute('rx', 5);
+                        labelBg.setAttribute('fill', 'white');
+                        labelBg.setAttribute('stroke', '#059669');
+                        labelBg.setAttribute('stroke-width', 2.5);
+                        svg.appendChild(labelBg);
+                        
+                        const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                        label.setAttribute('x', midX);
+                        label.setAttribute('y', midY + 8);
+                        label.setAttribute('text-anchor', 'middle');
+                        label.setAttribute('class', 'arrow-label');
+                        label.textContent = task.delay > 0 ? `+${task.delay}j` : `${task.delay}j`;
+                        svg.appendChild(label);
+                    }
+                });
+            });
+
+            // Dessiner les nœuds avec tous les détails
+            tasks.forEach(task => {
+                const pos = positions[task.id];
+                const isCritical = showCritical && criticalPath.includes(task.id);
+                
+                const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                g.setAttribute('class', isCritical ? 'node critical-path' : 'node');
+                g.setAttribute('data-task-id', task.id);
+                
+                const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                rect.setAttribute('x', pos.x);
+                rect.setAttribute('y', pos.y);
+                rect.setAttribute('width', 160);
+                rect.setAttribute('height', 115);
+                rect.setAttribute('rx', 10);
+                rect.setAttribute('class', 'node-rect');
+                
+                // Numéro de tâche
+                const textId = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                textId.setAttribute('x', pos.x + 15);
+                textId.setAttribute('y', pos.y + 22);
+                textId.setAttribute('class', 'node-id');
+                textId.textContent = `T${String(task.id).padStart(2, '0')}`;
+                
+                // Nom de la tâche
+                const textName = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                textName.setAttribute('x', pos.x + 80);
+                textName.setAttribute('y', pos.y + 40);
+                textName.setAttribute('text-anchor', 'middle');
+                textName.setAttribute('class', 'node-name');
+                textName.textContent = task.name.length > 16 ? task.name.substring(0, 14) + '...' : task.name;
+                
+                // Durée et effectif
+                const textInfo = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                textInfo.setAttribute('x', pos.x + 80);
+                textInfo.setAttribute('y', pos.y + 55);
+                textInfo.setAttribute('text-anchor', 'middle');
+                textInfo.setAttribute('class', 'node-info');
+                textInfo.textContent = `Durée: ${task.duration}j | Eff: ${task.effectif}`;
+                
+                // Ligne de séparation
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', pos.x + 10);
+                line.setAttribute('y1', pos.y + 65);
+                line.setAttribute('x2', pos.x + 150);
+                line.setAttribute('y2', pos.y + 65);
+                line.setAttribute('stroke', '#cbd5e0');
+                line.setAttribute('stroke-width', 1.5);
+                
+                // DTO (Date au plus Tôt)
+                const textDTO = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                textDTO.setAttribute('x', pos.x + 15);
+                textDTO.setAttribute('y', pos.y + 82);
+                textDTO.setAttribute('class', 'node-dates');
+                textDTO.textContent = `DTO: ${task.earlyStart}`;
+                
+                // DTA (Date au plus Tard)
+                const textDTA = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                textDTA.setAttribute('x', pos.x + 145);
+                textDTA.setAttribute('y', pos.y + 82);
+                textDTA.setAttribute('text-anchor', 'end');
+                textDTA.setAttribute('class', 'node-dates');
+                textDTA.textContent = `DTA: ${task.lateStart}`;
+                
+                // Marge Totale (MT)
+                const textMT = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                textMT.setAttribute('x', pos.x + 50);
+                textMT.setAttribute('y', pos.y + 95);
+                textMT.setAttribute('text-anchor', 'middle');
+                textMT.setAttribute('class', 'node-dates');
+                textMT.setAttribute('style', 'font-size: 11px; font-weight: 800;');
+                textMT.textContent = `MT: ${task.slack}j`;
+                if (task.slack === 0) {
+                    textMT.setAttribute('fill', '#dc2626');
+                }
+                
+                // Marge Libre (ML)
+                const textML = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                textML.setAttribute('x', pos.x + 110);
+                textML.setAttribute('y', pos.y + 95);
+                textML.setAttribute('text-anchor', 'middle');
+                textML.setAttribute('class', 'node-dates');
+                textML.setAttribute('style', 'font-size: 11px; font-weight: 800;');
+                textML.textContent = `ML: ${task.freeSlack}j`;
+                if (task.freeSlack === 0) {
+                    textML.setAttribute('fill', '#dc2626');
+                }
+                
+                g.appendChild(rect);
+                g.appendChild(textId);
+                g.appendChild(textName);
+                g.appendChild(textInfo);
+                g.appendChild(line);
+                g.appendChild(textDTO);
+                g.appendChild(textDTA);
+                g.appendChild(textMT);
+                g.appendChild(textML);
+                
+                g.addEventListener('mouseenter', (e) => showTooltip(e, task));
+                g.addEventListener('mouseleave', hideTooltip);
+                
+                svg.appendChild(g);
+            });
         }
 
-        // Optional sound effect
-        function playSound() {
-            // You can add a celebration sound here if you want
-            // const audio = new Audio('celebration.mp3');
-            // audio.play().catch(e => console.log('Sound blocked by browser'));
+        function showTooltip(e, task) {
+            const tooltip = document.getElementById('tooltip');
+            tooltip.innerHTML = `
+                <strong>Tâche ${String(task.id).padStart(2, '0')}: ${task.name}</strong><br><br>
+                📅 <strong>Durée:</strong> ${task.duration} jour(s)<br>
+                👥 <strong>Effectif:</strong> ${task.effectif} personne(s)<br><br>
+                🟢 <strong>DTO (Début au + Tôt):</strong> Jour ${task.earlyStart}<br>
+                🔴 <strong>DTA (Début au + Tard):</strong> Jour ${task.lateStart}<br><br>
+                📊 <strong>MT (Marge Totale):</strong> ${task.slack} jour(s)<br>
+                📊 <strong>ML (Marge Libre):</strong> ${task.freeSlack} jour(s)<br>
+                ${task.slack === 0 ? '<br><span style="color: #fbbf24;">⚠️ TÂCHE CRITIQUE - AUCUNE MARGE TOTALE !</span>' : ''}
+                ${task.freeSlack === 0 && task.slack > 0 ? '<br><span style="color: #fb923c;">⚡ Aucune marge libre - Impact direct sur tâches suivantes</span>' : ''}
+            `;
+            tooltip.style.left = e.pageX + 20 + 'px';
+            tooltip.style.top = e.pageY + 20 + 'px';
+            tooltip.classList.add('show');
         }
 
-        // Initial position for No button
-        window.addEventListener('load', () => {
-            const noBtn = document.getElementById('noBtn');
-            noBtn.style.position = 'relative';
-            noBtn.style.left = '0';
-            noBtn.style.top = '0';
-        });
+        function hideTooltip() {
+            document.getElementById('tooltip').classList.remove('show');
+        }
+
+        function toggleCriticalPath() {
+            showCritical = !showCritical;
+            drawNetwork();
+        }
+
+        function zoomIn() {
+            currentScale *= 1.25;
+            applyZoom();
+        }
+
+        function zoomOut() {
+            currentScale /= 1.25;
+            applyZoom();
+        }
+
+        function resetView() {
+            currentScale = 1;
+            applyZoom();
+        }
+
+        function applyZoom() {
+            const svg = document.getElementById('network');
+            svg.style.transform = `scale(${currentScale})`;
+            svg.style.transformOrigin = 'top left';
+        }
+
+        // Initialisation
+        const totalDuration = calculateDates();
+        document.getElementById('total-duration').textContent = totalDuration + ' jours';
+        document.getElementById('critical-tasks').textContent = criticalPath.length + ' tâches';
+        drawNetwork();
     </script>
 </body>
 </html>
