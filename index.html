@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Réseau Potentiel-Tâches - Villa R+1</title>
+    <title>Planification Projet - Villa R+1</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;700&family=Orbitron:wght@700;900&family=Roboto:wght@400;500;700&display=swap');
         
         * {
             margin: 0;
@@ -17,30 +17,98 @@
             font-family: 'Montserrat', sans-serif;
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
             min-height: 100vh;
-            padding: 2rem;
+            padding: 0;
             overflow-x: auto;
         }
         
-        .container {
-            max-width: 100%;
+        /* Navigation */
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .nav-button {
+            background: linear-gradient(135deg, #1e3c72 0%, #7e22ce 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(126, 34, 206, 0.3);
+        }
+        
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(126, 34, 206, 0.5);
+        }
+        
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: rgba(255, 255, 255, 0.98);
+            margin: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
+        }
+        
+        .hero h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 4rem;
+            background: linear-gradient(135deg, #1e3c72, #7e22ce);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            letter-spacing: 3px;
+        }
+        
+        .hero .subtitle {
+            color: #64748b;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .hero .description {
+            color: #475569;
+            font-size: 1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Diagram Section */
+        .diagram-section {
+            margin: 3rem 2rem;
             background: rgba(255, 255, 255, 0.98);
             border-radius: 20px;
             padding: 2rem;
             box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
         }
         
-        h1 {
+        .section-title {
             font-family: 'Bebas Neue', sans-serif;
-            font-size: 3rem;
+            font-size: 2.5rem;
             background: linear-gradient(135deg, #1e3c72, #7e22ce);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-align: center;
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
             letter-spacing: 2px;
         }
         
-        .subtitle {
+        .section-subtitle {
             text-align: center;
             color: #64748b;
             margin-bottom: 2rem;
@@ -76,6 +144,11 @@
             box-shadow: 0 8px 25px rgba(126, 34, 206, 0.5);
         }
         
+        button.active {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        }
+        
+        /* Network Diagram Styles */
         #network-container {
             background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
             border-radius: 16px;
@@ -265,18 +338,211 @@
         .tooltip strong {
             color: #fbbf24;
         }
+        
+        /* Gantt Chart Styles */
+        #gantt-container {
+            background: #0f172a;
+            border-radius: 16px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            border: 2px solid #334155;
+        }
+        
+        #gantt-chart {
+            min-width: 100%;
+        }
+        
+        .gantt-header {
+            display: flex;
+            margin-bottom: 1rem;
+            border-bottom: 3px solid #f59e0b;
+            padding-bottom: 0.5rem;
+        }
+        
+        .task-column {
+            width: 350px;
+            font-weight: 700;
+            color: #fbbf24;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .timeline-column {
+            flex: 1;
+            display: flex;
+            position: relative;
+        }
+        
+        .day-label {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .gantt-row {
+            display: flex;
+            margin-bottom: 0.5rem;
+            align-items: center;
+            transition: all 0.3s ease;
+            padding: 0.5rem;
+            border-radius: 8px;
+        }
+        
+        .gantt-row:hover {
+            background: rgba(245, 158, 11, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .task-info {
+            width: 350px;
+            padding-right: 1rem;
+        }
+        
+        .task-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #e2e8f0;
+            margin-bottom: 0.2rem;
+        }
+        
+        .task-id {
+            font-weight: 800;
+            color: #fbbf24;
+            margin-right: 0.5rem;
+        }
+        
+        .task-details {
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+        
+        .timeline {
+            flex: 1;
+            position: relative;
+            height: 40px;
+        }
+        
+        .task-bar {
+            position: absolute;
+            height: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+        
+        .task-bar:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+        }
+        
+        .task-bar.normal {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+        }
+        
+        .task-bar.critical {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border: 2px solid #fbbf24;
+        }
+        
+        .week-separator {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: rgba(148, 163, 184, 0.3);
+            pointer-events: none;
+        }
+        
+        /* Effectif Chart Styles */
+        .chart-container {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 3px solid #cbd5e0;
+        }
+        
+        #effectifChart {
+            width: 100%;
+            height: 500px;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+        
+        .task-legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.8rem;
+            margin-top: 2rem;
+        }
+        
+        .legend-color {
+            width: 25px;
+            height: 25px;
+            border-radius: 5px;
+            flex-shrink: 0;
+        }
+        
+        .legend-text {
+            font-weight: 600;
+            color: #334155;
+        }
+        
+        .critical-badge {
+            background: #dc2626;
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-left: 0.3rem;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 6px solid #2563eb;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Réseau Potentiel-Tâches</h1>
-        <p class="subtitle">Étude et Conception d'une Villa R+1 - Badie AYEB - PFF 2025-2026</p>
+    <!-- Navigation -->
+    <nav class="nav">
+        <button class="nav-button" onclick="scrollToSection('reseau')">📊 Réseau Potentiel</button>
+        <button class="nav-button" onclick="scrollToSection('gantt')">📅 Diagramme de Gantt</button>
+        <button class="nav-button" onclick="scrollToSection('effectif')">👥 Diagramme d'Effectif</button>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>PLANIFICATION DE PROJET</h1>
+        <p class="subtitle">Étude et Conception d'une Villa R+1</p>
+        <p class="description">Badie AYEB - PFF 2025-2026</p>
+    </div>
+
+    <!-- Réseau Potentiel-Tâches Section -->
+    <section id="reseau" class="diagram-section">
+        <h2 class="section-title">Réseau Potentiel-Tâches</h2>
+        <p class="section-subtitle">Visualisation des dépendances et du chemin critique</p>
         
         <div class="controls">
-            <button onclick="toggleCriticalPath()">🎯 Chemin Critique</button>
-            <button onclick="zoomIn()">🔍 Zoom +</button>
-            <button onclick="zoomOut()">🔍 Zoom -</button>
-            <button onclick="resetView()">↻ Réinitialiser</button>
+            <button onclick="toggleCriticalPath('network')">🎯 Chemin Critique</button>
+            <button onclick="zoomIn('network')">🔍 Zoom +</button>
+            <button onclick="zoomOut('network')">🔍 Zoom -</button>
+            <button onclick="resetView('network')">↻ Réinitialiser</button>
         </div>
         
         <div id="network-container">
@@ -315,7 +581,7 @@
             <div class="stats">
                 <div class="stat-item">
                     <div class="stat-label">Durée totale du projet</div>
-                    <div class="stat-value" id="total-duration">-</div>
+                    <div class="stat-value" id="total-duration-network">-</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-label">Nombre de tâches</div>
@@ -323,7 +589,7 @@
                 </div>
                 <div class="stat-item">
                     <div class="stat-label">Tâches critiques</div>
-                    <div class="stat-value" id="critical-tasks">-</div>
+                    <div class="stat-value" id="critical-tasks-network">-</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-label">Effectif maximal</div>
@@ -331,11 +597,99 @@
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+
+    <!-- Gantt Chart Section -->
+    <section id="gantt" class="diagram-section">
+        <h2 class="section-title">Diagramme de Gantt</h2>
+        <p class="section-subtitle">Planning temporel des tâches du projet</p>
+        
+        <div class="controls">
+            <button onclick="toggleCriticalPath('gantt')">🎯 Afficher Chemin Critique</button>
+            <button onclick="zoomIn('gantt')">🔍 Zoom +</button>
+            <button onclick="zoomOut('gantt')">🔍 Zoom -</button>
+            <button onclick="resetView('gantt')">↻ Réinitialiser</button>
+        </div>
+        
+        <div id="gantt-container">
+            <div id="gantt-chart"></div>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-box" style="background: linear-gradient(135deg, #3b82f6, #2563eb);"></div>
+                <span>Tâche normale</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background: linear-gradient(135deg, #ef4444, #dc2626); border: 2px solid #fbbf24;"></div>
+                <span>Chemin critique</span>
+            </div>
+        </div>
+        
+        <div class="info-panel">
+            <h3>📊 Statistiques du Projet</h3>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-label">Durée totale du projet</div>
+                    <div class="stat-value" id="total-duration-gantt">-</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Nombre de tâches</div>
+                    <div class="stat-value">26</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Tâches critiques</div>
+                    <div class="stat-value" id="critical-tasks-gantt">-</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Effectif maximal</div>
+                    <div class="stat-value">5</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Effectif Chart Section -->
+    <section id="effectif" class="diagram-section">
+        <h2 class="section-title">Diagramme d'Effectif</h2>
+        <p class="section-subtitle">Planification des ressources humaines</p>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-label">Effectif Maximum</div>
+                <div class="stat-value" id="maxEffectif">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Durée Totale</div>
+                <div class="stat-value" id="totalDuration-effectif">0 jours</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Nombre de Tâches</div>
+                <div class="stat-value" id="taskCount">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Tâches Critiques</div>
+                <div class="stat-value" id="criticalCount">0</div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button onclick="toggleView('stacked')" class="active" id="btnStacked">Vue Empilée</button>
+            <button onclick="toggleView('cumulative')" id="btnCumulative">Vue Cumulative</button>
+            <button onclick="toggleCriticalPath('effectif')">Afficher Chemin Critique</button>
+        </div>
+        
+        <div class="chart-container">
+            <div id="effectifChart"></div>
+        </div>
+        
+        <div class="task-legend" id="taskLegend"></div>
+    </section>
 
     <div class="tooltip" id="tooltip"></div>
 
     <script>
+        // Shared tasks data
         const tasks = [
             {id: 1, name: "Décapage terrain", duration: 1, effectif: 1, next: [2], delay: 0},
             {id: 2, name: "Fouilles puits/rigoles", duration: 1, effectif: 2, next: [3], delay: 0},
@@ -365,9 +719,10 @@
             {id: 26, name: "Nettoyage", duration: 3, effectif: 2, next: [], delay: 0}
         ];
 
-        let showCritical = false;
-        let currentScale = 1;
-        let criticalPath = [];
+        // ========== NETWORK DIAGRAM ==========
+        let showCriticalNetwork = false;
+        let currentScaleNetwork = 1;
+        let criticalPathNetwork = [];
         
         function calculateDates() {
             tasks.forEach(task => {
@@ -433,7 +788,7 @@
             });
 
             // Identifier le chemin critique
-            criticalPath = tasks.filter(t => t.slack === 0).map(t => t.id);
+            criticalPathNetwork = tasks.filter(t => t.slack === 0).map(t => t.id);
             
             return lastTask.earlyFinish;
         }
@@ -454,7 +809,6 @@
                 </defs>
             `;
 
-            // Disposition optimisée avec espacement
             const positions = {
                 1: {x: 80, y: 100}, 2: {x: 280, y: 100}, 3: {x: 480, y: 100}, 
                 4: {x: 680, y: 100}, 5: {x: 880, y: 100}, 6: {x: 1080, y: 100},
@@ -467,12 +821,12 @@
                 25: {x: 430, y: 1450}, 26: {x: 180, y: 1450}
             };
 
-            // Dessiner les flèches avec labels de décalage et type de lien
+            // Dessiner les flèches
             tasks.forEach(task => {
                 const pos1 = positions[task.id];
                 task.next.forEach(nextId => {
                     const pos2 = positions[nextId];
-                    const isCritical = showCritical && criticalPath.includes(task.id) && criticalPath.includes(nextId);
+                    const isCritical = showCriticalNetwork && criticalPathNetwork.includes(task.id) && criticalPathNetwork.includes(nextId);
                     
                     const path = `M ${pos1.x + 80} ${pos1.y + 50} L ${pos2.x} ${pos2.y + 50}`;
                     const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -483,7 +837,6 @@
                     const midX = (pos1.x + 80 + pos2.x) / 2;
                     const midY = (pos1.y + 50 + pos2.y + 50) / 2;
                     
-                    // Label de liaison entre tâches (ex: T08 FD T09)
                     const linkText = `T${String(task.id).padStart(2, '0')} FD T${String(nextId).padStart(2, '0')}`;
                     
                     const linkBg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
@@ -506,7 +859,6 @@
                     linkLabel.textContent = linkText;
                     svg.appendChild(linkLabel);
                     
-                    // Afficher le décalage s'il existe
                     if (task.delay && task.delay !== 0) {
                         const labelBg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
                         labelBg.setAttribute('x', midX - 20);
@@ -530,10 +882,10 @@
                 });
             });
 
-            // Dessiner les nœuds avec tous les détails
+            // Dessiner les nœuds
             tasks.forEach(task => {
                 const pos = positions[task.id];
-                const isCritical = showCritical && criticalPath.includes(task.id);
+                const isCritical = showCriticalNetwork && criticalPathNetwork.includes(task.id);
                 
                 const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
                 g.setAttribute('class', isCritical ? 'node critical-path' : 'node');
@@ -547,14 +899,12 @@
                 rect.setAttribute('rx', 10);
                 rect.setAttribute('class', 'node-rect');
                 
-                // Numéro de tâche
                 const textId = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                 textId.setAttribute('x', pos.x + 15);
                 textId.setAttribute('y', pos.y + 22);
                 textId.setAttribute('class', 'node-id');
                 textId.textContent = `T${String(task.id).padStart(2, '0')}`;
                 
-                // Nom de la tâche
                 const textName = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                 textName.setAttribute('x', pos.x + 80);
                 textName.setAttribute('y', pos.y + 40);
@@ -562,7 +912,6 @@
                 textName.setAttribute('class', 'node-name');
                 textName.textContent = task.name.length > 16 ? task.name.substring(0, 14) + '...' : task.name;
                 
-                // Durée et effectif
                 const textInfo = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                 textInfo.setAttribute('x', pos.x + 80);
                 textInfo.setAttribute('y', pos.y + 55);
@@ -570,7 +919,6 @@
                 textInfo.setAttribute('class', 'node-info');
                 textInfo.textContent = `Durée: ${task.duration}j | Eff: ${task.effectif}`;
                 
-                // Ligne de séparation
                 const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
                 line.setAttribute('x1', pos.x + 10);
                 line.setAttribute('y1', pos.y + 65);
@@ -579,14 +927,12 @@
                 line.setAttribute('stroke', '#cbd5e0');
                 line.setAttribute('stroke-width', 1.5);
                 
-                // DTO (Date au plus Tôt)
                 const textDTO = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                 textDTO.setAttribute('x', pos.x + 15);
                 textDTO.setAttribute('y', pos.y + 82);
                 textDTO.setAttribute('class', 'node-dates');
                 textDTO.textContent = `DTO: ${task.earlyStart}`;
                 
-                // DTA (Date au plus Tard)
                 const textDTA = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                 textDTA.setAttribute('x', pos.x + 145);
                 textDTA.setAttribute('y', pos.y + 82);
@@ -594,7 +940,6 @@
                 textDTA.setAttribute('class', 'node-dates');
                 textDTA.textContent = `DTA: ${task.lateStart}`;
                 
-                // Marge Totale (MT)
                 const textMT = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                 textMT.setAttribute('x', pos.x + 50);
                 textMT.setAttribute('y', pos.y + 95);
@@ -606,7 +951,6 @@
                     textMT.setAttribute('fill', '#dc2626');
                 }
                 
-                // Marge Libre (ML)
                 const textML = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                 textML.setAttribute('x', pos.x + 110);
                 textML.setAttribute('y', pos.y + 95);
@@ -657,37 +1001,420 @@
             document.getElementById('tooltip').classList.remove('show');
         }
 
-        function toggleCriticalPath() {
-            showCritical = !showCritical;
-            drawNetwork();
+        function toggleCriticalPath(type) {
+            if (type === 'network') {
+                showCriticalNetwork = !showCriticalNetwork;
+                drawNetwork();
+            } else if (type === 'gantt') {
+                showCriticalGantt = !showCriticalGantt;
+                drawGantt();
+            } else if (type === 'effectif') {
+                showCriticalEffectif = !showCriticalEffectif;
+                drawEffectifChart();
+            }
         }
 
-        function zoomIn() {
-            currentScale *= 1.25;
-            applyZoom();
+        function zoomIn(type) {
+            if (type === 'network') {
+                currentScaleNetwork *= 1.25;
+                const svg = document.getElementById('network');
+                svg.style.transform = `scale(${currentScaleNetwork})`;
+                svg.style.transformOrigin = 'top left';
+            } else if (type === 'gantt') {
+                dayWidthGantt *= 1.3;
+                drawGantt();
+            }
         }
 
-        function zoomOut() {
-            currentScale /= 1.25;
-            applyZoom();
+        function zoomOut(type) {
+            if (type === 'network') {
+                currentScaleNetwork /= 1.25;
+                const svg = document.getElementById('network');
+                svg.style.transform = `scale(${currentScaleNetwork})`;
+                svg.style.transformOrigin = 'top left';
+            } else if (type === 'gantt') {
+                dayWidthGantt /= 1.3;
+                drawGantt();
+            }
         }
 
-        function resetView() {
-            currentScale = 1;
-            applyZoom();
+        function resetView(type) {
+            if (type === 'network') {
+                currentScaleNetwork = 1;
+                const svg = document.getElementById('network');
+                svg.style.transform = `scale(${currentScaleNetwork})`;
+                svg.style.transformOrigin = 'top left';
+            } else if (type === 'gantt') {
+                dayWidthGantt = 8;
+                drawGantt();
+            }
         }
 
-        function applyZoom() {
-            const svg = document.getElementById('network');
-            svg.style.transform = `scale(${currentScale})`;
-            svg.style.transformOrigin = 'top left';
+        // ========== GANTT CHART ==========
+        let showCriticalGantt = false;
+        let dayWidthGantt = 8;
+        let criticalPathGantt = [];
+
+        function drawGantt() {
+            const totalDuration = calculateDates();
+            criticalPathGantt = criticalPathNetwork;
+            const chart = document.getElementById('gantt-chart');
+            chart.innerHTML = '';
+            
+            const header = document.createElement('div');
+            header.className = 'gantt-header';
+            
+            const taskCol = document.createElement('div');
+            taskCol.className = 'task-column';
+            taskCol.textContent = 'Tâches';
+            
+            const timelineCol = document.createElement('div');
+            timelineCol.className = 'timeline-column';
+            
+            for (let i = 0; i <= totalDuration; i += 5) {
+                const dayLabel = document.createElement('div');
+                dayLabel.className = 'day-label';
+                dayLabel.style.position = 'absolute';
+                dayLabel.style.left = `${i * dayWidthGantt}px`;
+                dayLabel.textContent = `J${i}`;
+                timelineCol.appendChild(dayLabel);
+            }
+            
+            for (let i = 7; i <= totalDuration; i += 7) {
+                const separator = document.createElement('div');
+                separator.className = 'week-separator';
+                separator.style.left = `${i * dayWidthGantt}px`;
+                timelineCol.appendChild(separator);
+            }
+            
+            header.appendChild(taskCol);
+            header.appendChild(timelineCol);
+            chart.appendChild(header);
+            
+            tasks.forEach(task => {
+                const row = document.createElement('div');
+                row.className = 'gantt-row';
+                
+                const taskInfo = document.createElement('div');
+                taskInfo.className = 'task-info';
+                taskInfo.innerHTML = `
+                    <div class="task-name">
+                        <span class="task-id">T${String(task.id).padStart(2, '0')}</span>
+                        ${task.name}
+                    </div>
+                    <div class="task-details">
+                        Durée: ${task.duration}j | Effectif: ${task.effectif} | 
+                        Marge: ${task.slack}j
+                    </div>
+                `;
+                
+                const timeline = document.createElement('div');
+                timeline.className = 'timeline';
+                
+                const taskBar = document.createElement('div');
+                taskBar.className = `task-bar ${showCriticalGantt && criticalPathGantt.includes(task.id) ? 'critical' : 'normal'}`;
+                taskBar.style.left = `${task.earlyStart * dayWidthGantt}px`;
+                taskBar.style.width = `${task.duration * dayWidthGantt}px`;
+                taskBar.textContent = `${task.duration}j`;
+                
+                taskBar.addEventListener('mouseenter', (e) => showTooltipGantt(e, task));
+                taskBar.addEventListener('mouseleave', hideTooltip);
+                
+                timeline.appendChild(taskBar);
+                
+                row.appendChild(taskInfo);
+                row.appendChild(timeline);
+                chart.appendChild(row);
+            });
         }
 
-        // Initialisation
+        function showTooltipGantt(e, task) {
+            const tooltip = document.getElementById('tooltip');
+            tooltip.innerHTML = `
+                <strong>Tâche ${String(task.id).padStart(2, '0')}: ${task.name}</strong><br><br>
+                📅 <strong>Début:</strong> Jour ${task.earlyStart}<br>
+                📅 <strong>Fin:</strong> Jour ${task.earlyFinish}<br>
+                ⏱️ <strong>Durée:</strong> ${task.duration} jour(s)<br>
+                👥 <strong>Effectif:</strong> ${task.effectif} personne(s)<br>
+                📊 <strong>Marge:</strong> ${task.slack} jour(s)<br>
+                ${task.slack === 0 ? '<br><span style="color: #fbbf24;">⚠️ TÂCHE CRITIQUE</span>' : ''}
+            `;
+            tooltip.style.left = e.pageX + 20 + 'px';
+            tooltip.style.top = e.pageY + 20 + 'px';
+            tooltip.classList.add('show');
+        }
+
+        // ========== EFFECTIF CHART ==========
+        let currentView = 'stacked';
+        let showCriticalEffectif = false;
+        let criticalPathEffectif = [];
+        
+        const colors = [
+            '#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6',
+            '#ec4899', '#14b8a6', '#f97316', '#6366f1', '#84cc16',
+            '#06b6d4', '#a855f7', '#eab308', '#22c55e', '#f43f5e',
+            '#0ea5e9', '#d946ef', '#64748b', '#fb923c', '#4ade80',
+            '#0891b2', '#c026d3', '#facc15', '#38bdf8', '#fb7185', '#94a3b8'
+        ];
+        
+        function drawEffectifChart() {
+            const totalDuration = calculateDates();
+            criticalPathEffectif = criticalPathNetwork;
+            const chartDiv = document.getElementById('effectifChart');
+            chartDiv.innerHTML = '';
+            
+            const width = Math.max(1200, totalDuration * 15);
+            const height = 450;
+            const margin = {top: 40, right: 40, bottom: 80, left: 60};
+            const chartWidth = width - margin.left - margin.right;
+            const chartHeight = height - margin.top - margin.bottom;
+            
+            const dailyEffectif = new Array(totalDuration + 1).fill(0);
+            const dailyTasks = {};
+            
+            for (let day = 0; day <= totalDuration; day++) {
+                dailyTasks[day] = [];
+            }
+            
+            tasks.forEach(task => {
+                for (let day = task.earlyStart; day < task.earlyStart + task.duration; day++) {
+                    dailyEffectif[day] += task.effectif;
+                    dailyTasks[day].push(task);
+                }
+            });
+            
+            const maxEffectif = Math.max(...dailyEffectif);
+            
+            document.getElementById('maxEffectif').textContent = maxEffectif + ' pers.';
+            document.getElementById('totalDuration-effectif').textContent = totalDuration + ' jours';
+            document.getElementById('taskCount').textContent = tasks.length;
+            document.getElementById('criticalCount').textContent = criticalPathEffectif.length;
+            
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('width', width);
+            svg.setAttribute('height', height);
+            svg.style.display = 'block';
+            svg.style.margin = '0 auto';
+            
+            for (let i = 0; i <= maxEffectif; i += 5) {
+                const y = margin.top + chartHeight - (i / maxEffectif) * chartHeight;
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', margin.left);
+                line.setAttribute('y1', y);
+                line.setAttribute('x2', margin.left + chartWidth);
+                line.setAttribute('y2', y);
+                line.setAttribute('stroke', '#e2e8f0');
+                line.setAttribute('stroke-width', i === 0 ? 2 : 1);
+                svg.appendChild(line);
+                
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', margin.left - 10);
+                text.setAttribute('y', y + 5);
+                text.setAttribute('text-anchor', 'end');
+                text.setAttribute('fill', '#64748b');
+                text.setAttribute('font-size', '12px');
+                text.setAttribute('font-weight', '600');
+                text.textContent = i;
+                svg.appendChild(text);
+            }
+            
+            if (currentView === 'stacked') {
+                drawStackedView(svg, dailyEffectif, dailyTasks, chartWidth, chartHeight, margin, totalDuration, maxEffectif);
+            } else {
+                drawCumulativeView(svg, dailyEffectif, chartWidth, chartHeight, margin, totalDuration, maxEffectif);
+            }
+            
+            for (let day = 0; day <= totalDuration; day += 5) {
+                const x = margin.left + (day / totalDuration) * chartWidth;
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', x);
+                line.setAttribute('y1', margin.top);
+                line.setAttribute('x2', x);
+                line.setAttribute('y2', margin.top + chartHeight);
+                line.setAttribute('stroke', '#cbd5e0');
+                line.setAttribute('stroke-width', 1);
+                line.setAttribute('stroke-dasharray', '3,3');
+                svg.appendChild(line);
+                
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', x);
+                text.setAttribute('y', margin.top + chartHeight + 25);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('fill', '#64748b');
+                text.setAttribute('font-size', '12px');
+                text.setAttribute('font-weight', '600');
+                text.textContent = `J${day}`;
+                svg.appendChild(text);
+            }
+            
+            const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            xLabel.setAttribute('x', margin.left + chartWidth / 2);
+            xLabel.setAttribute('y', height - 20);
+            xLabel.setAttribute('text-anchor', 'middle');
+            xLabel.setAttribute('fill', '#1e3c72');
+            xLabel.setAttribute('font-size', '14px');
+            xLabel.setAttribute('font-weight', '700');
+            xLabel.textContent = 'Jours';
+            svg.appendChild(xLabel);
+            
+            const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            yLabel.setAttribute('x', -height / 2);
+            yLabel.setAttribute('y', 20);
+            yLabel.setAttribute('text-anchor', 'middle');
+            yLabel.setAttribute('fill', '#1e3c72');
+            yLabel.setAttribute('font-size', '14px');
+            yLabel.setAttribute('font-weight', '700');
+            yLabel.setAttribute('transform', 'rotate(-90)');
+            yLabel.textContent = 'Effectif (personnes)';
+            svg.appendChild(yLabel);
+            
+            chartDiv.appendChild(svg);
+            
+            drawLegend();
+        }
+        
+        function drawStackedView(svg, dailyEffectif, dailyTasks, chartWidth, chartHeight, margin, totalDuration, maxEffectif) {
+            const barWidth = chartWidth / totalDuration;
+            
+            for (let day = 0; day < totalDuration; day++) {
+                const tasksOnDay = dailyTasks[day];
+                let currentHeight = 0;
+                
+                tasksOnDay.forEach(task => {
+                    const taskHeight = (task.effectif / maxEffectif) * chartHeight;
+                    const x = margin.left + (day / totalDuration) * chartWidth;
+                    const y = margin.top + chartHeight - currentHeight - taskHeight;
+                    
+                    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                    rect.setAttribute('x', x);
+                    rect.setAttribute('y', y);
+                    rect.setAttribute('width', barWidth * 0.9);
+                    rect.setAttribute('height', taskHeight);
+                    rect.setAttribute('fill', showCriticalEffectif && criticalPathEffectif.includes(task.id) ? '#dc2626' : colors[(task.id - 1) % colors.length]);
+                    rect.setAttribute('stroke', 'white');
+                    rect.setAttribute('stroke-width', 1);
+                    rect.setAttribute('opacity', '0.85');
+                    rect.style.cursor = 'pointer';
+                    
+                    rect.addEventListener('mouseenter', (e) => showTooltipEffectif(e, task, day));
+                    rect.addEventListener('mouseleave', hideTooltip);
+                    
+                    svg.appendChild(rect);
+                    currentHeight += taskHeight;
+                });
+            }
+        }
+        
+        function drawCumulativeView(svg, dailyEffectif, chartWidth, chartHeight, margin, totalDuration, maxEffectif) {
+            const points = dailyEffectif.map((effectif, day) => {
+                const x = margin.left + (day / totalDuration) * chartWidth;
+                const y = margin.top + chartHeight - (effectif / maxEffectif) * chartHeight;
+                return `${x},${y}`;
+            }).join(' ');
+            
+            const area = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+            const areaPoints = `${margin.left},${margin.top + chartHeight} ` + points + ` ${margin.left + chartWidth},${margin.top + chartHeight}`;
+            area.setAttribute('points', areaPoints);
+            area.setAttribute('fill', showCriticalEffectif ? 'rgba(220, 38, 38, 0.2)' : 'rgba(59, 130, 246, 0.2)');
+            svg.appendChild(area);
+            
+            const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+            polyline.setAttribute('points', points);
+            polyline.setAttribute('fill', 'none');
+            polyline.setAttribute('stroke', showCriticalEffectif ? '#dc2626' : '#3b82f6');
+            polyline.setAttribute('stroke-width', 3);
+            svg.appendChild(polyline);
+            
+            dailyEffectif.forEach((effectif, day) => {
+                const x = margin.left + (day / totalDuration) * chartWidth;
+                const y = margin.top + chartHeight - (effectif / maxEffectif) * chartHeight;
+                
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', x);
+                circle.setAttribute('cy', y);
+                circle.setAttribute('r', 4);
+                circle.setAttribute('fill', showCriticalEffectif ? '#dc2626' : '#3b82f6');
+                circle.setAttribute('stroke', 'white');
+                circle.setAttribute('stroke-width', 2);
+                circle.style.cursor = 'pointer';
+                
+                circle.addEventListener('mouseenter', (e) => {
+                    const tooltip = document.getElementById('tooltip');
+                    tooltip.innerHTML = `<strong>Jour ${day}</strong><br>Effectif total: ${effectif} personnes`;
+                    tooltip.style.left = e.pageX + 15 + 'px';
+                    tooltip.style.top = e.pageY + 15 + 'px';
+                    tooltip.classList.add('show');
+                });
+                circle.addEventListener('mouseleave', hideTooltip);
+                
+                svg.appendChild(circle);
+            });
+        }
+        
+        function drawLegend() {
+            const legend = document.getElementById('taskLegend');
+            legend.innerHTML = '';
+            
+            tasks.forEach(task => {
+                const item = document.createElement('div');
+                item.className = 'legend-item';
+                
+                const colorBox = document.createElement('div');
+                colorBox.className = 'legend-color';
+                colorBox.style.backgroundColor = colors[(task.id - 1) % colors.length];
+                
+                const text = document.createElement('div');
+                text.className = 'legend-text';
+                text.innerHTML = `T${String(task.id).padStart(2, '0')}: ${task.name}`;
+                
+                if (criticalPathEffectif.includes(task.id)) {
+                    const badge = document.createElement('span');
+                    badge.className = 'critical-badge';
+                    badge.textContent = 'CRITIQUE';
+                    text.appendChild(badge);
+                }
+                
+                item.appendChild(colorBox);
+                item.appendChild(text);
+                legend.appendChild(item);
+            });
+        }
+        
+        function showTooltipEffectif(e, task, day) {
+            const tooltip = document.getElementById('tooltip');
+            tooltip.innerHTML = `
+                <strong>T${String(task.id).padStart(2, '0')}: ${task.name}</strong><br>
+                Jour: ${day}<br>
+                Effectif: ${task.effectif} personnes<br>
+                Durée restante: ${task.earlyStart + task.duration - day} jour(s)
+                ${criticalPathEffectif.includes(task.id) ? '<br><span style="color: #fbbf24;">⚠️ TÂCHE CRITIQUE</span>' : ''}
+            `;
+            tooltip.style.left = e.pageX + 15 + 'px';
+            tooltip.style.top = e.pageY + 15 + 'px';
+            tooltip.classList.add('show');
+        }
+        
+        function toggleView(view) {
+            currentView = view;
+            document.getElementById('btnStacked').classList.toggle('active', view === 'stacked');
+            document.getElementById('btnCumulative').classList.toggle('active', view === 'cumulative');
+            drawEffectifChart();
+        }
+
+        // Navigation function
+        function scrollToSection(sectionId) {
+            document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Initialization
         const totalDuration = calculateDates();
-        document.getElementById('total-duration').textContent = totalDuration + ' jours';
-        document.getElementById('critical-tasks').textContent = criticalPath.length + ' tâches';
+        document.getElementById('total-duration-network').textContent = totalDuration + ' jours';
+        document.getElementById('critical-tasks-network').textContent = criticalPathNetwork.length + ' tâches';
+        document.getElementById('total-duration-gantt').textContent = totalDuration + ' jours';
+        document.getElementById('critical-tasks-gantt').textContent = criticalPathNetwork.length + ' tâches';
         drawNetwork();
+        drawGantt();
+        drawEffectifChart();
     </script>
 </body>
 </html>

@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagramme d'Effectif - Villa R+1</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
+        }
+        
+        h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3rem;
+            background: linear-gradient(135deg, #1e3c72, #7e22ce);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            letter-spacing: 2px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 6px solid #2563eb;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #64748b;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #1e3c72;
+            font-family: 'Bebas Neue', sans-serif;
+        }
+        
+        .chart-container {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 3px solid #cbd5e0;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #1e3c72 0%, #7e22ce 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(126, 34, 206, 0.3);
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(126, 34, 206, 0.5);
+        }
+        
+        button.active {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        }
+        
+        #effectifChart {
+            width: 100%;
+            height: 500px;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+        
+        .task-legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.8rem;
+            margin-top: 2rem;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #e2e8f0;
+            font-size: 0.85rem;
+        }
+        
+        .legend-color {
+            width: 25px;
+            height: 25px;
+            border-radius: 5px;
+            flex-shrink: 0;
+        }
+        
+        .legend-text {
+            font-weight: 600;
+            color: #334155;
+        }
+        
+        .tooltip {
+            position: absolute;
+            background: rgba(30, 60, 114, 0.98);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1000;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            max-width: 300px;
+        }
+        
+        .tooltip.show {
+            opacity: 1;
+        }
+        
+        .critical-badge {
+            background: #dc2626;
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-left: 0.3rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>DIAGRAMME D'EFFECTIF</h1>
+        <p class="subtitle">Construction Villa R+1 - Planification des Ressources</p>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-label">Effectif Maximum</div>
+                <div class="stat-value" id="maxEffectif">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Durée Totale</div>
+                <div class="stat-value" id="totalDuration">0 jours</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Nombre de Tâches</div>
+                <div class="stat-value" id="taskCount">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Tâches Critiques</div>
+                <div class="stat-value" id="criticalCount">0</div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button onclick="toggleView('stacked')" class="active" id="btnStacked">Vue Empilée</button>
+            <button onclick="toggleView('cumulative')" id="btnCumulative">Vue Cumulative</button>
+            <button onclick="toggleCriticalPath()">Afficher Chemin Critique</button>
+        </div>
+        
+        <div class="chart-container">
+            <div id="effectifChart"></div>
+        </div>
+        
+        <div class="task-legend" id="taskLegend"></div>
+    </div>
+    
+    <div class="tooltip" id="tooltip"></div>
+    
+    <script>
+        const tasks = [
+            {id: 1, name: "Décapage terrain", duration: 1, effectif: 1, next: [2], delay: 0},
+            {id: 2, name: "Fouilles puits/rigoles", duration: 1, effectif: 2, next: [3], delay: 0},
+            {id: 3, name: "Gros béton", duration: 1, effectif: 3, next: [4], delay: 0},
+            {id: 4, name: "Béton propreté", duration: 1, effectif: 3, next: [5], delay: 0},
+            {id: 5, name: "B.A fondation", duration: 3, effectif: 3, next: [6], delay: 0},
+            {id: 6, name: "Chape armée", duration: 6, effectif: 5, next: [7], delay: 0},
+            {id: 7, name: "B.A élév. RDC", duration: 6, effectif: 5, next: [8], delay: 0},
+            {id: 8, name: "Plancher RDC", duration: 15, effectif: 5, next: [9], delay: 3},
+            {id: 9, name: "Escalier RDC", duration: 2, effectif: 5, next: [10], delay: 0},
+            {id: 10, name: "B.A élév. étage", duration: 6, effectif: 5, next: [11], delay: 0},
+            {id: 11, name: "Plancher étage", duration: 12, effectif: 5, next: [12], delay: 3},
+            {id: 12, name: "Escalier étage", duration: 2, effectif: 5, next: [13], delay: 0},
+            {id: 13, name: "Maçonnerie", duration: 30, effectif: 5, next: [14], delay: -15},
+            {id: 14, name: "Enduit intérieur", duration: 30, effectif: 5, next: [15], delay: -5},
+            {id: 15, name: "Enduit extérieur", duration: 15, effectif: 5, next: [16], delay: 7},
+            {id: 16, name: "Pose Staff", duration: 30, effectif: 2, next: [17], delay: 3},
+            {id: 17, name: "Acrotère", duration: 2, effectif: 2, next: [18], delay: 0},
+            {id: 18, name: "Étanchéité", duration: 1, effectif: 3, next: [19], delay: 0},
+            {id: 19, name: "Forme de pente", duration: 1, effectif: 3, next: [20], delay: 0},
+            {id: 20, name: "Revêtement", duration: 30, effectif: 5, next: [21], delay: -10},
+            {id: 21, name: "Seuils/appuis", duration: 1, effectif: 4, next: [22], delay: 0},
+            {id: 22, name: "Menuiserie pose", duration: 3, effectif: 4, next: [23, 24], delay: 0},
+            {id: 23, name: "Électricité", duration: 8, effectif: 4, next: [25], delay: 0},
+            {id: 24, name: "Plomberie", duration: 6, effectif: 4, next: [25], delay: 0},
+            {id: 25, name: "Peinture", duration: 35, effectif: 4, next: [26], delay: 0},
+            {id: 26, name: "Nettoyage", duration: 3, effectif: 2, next: [], delay: 0}
+        ];
+
+        let currentView = 'stacked';
+        let showCritical = false;
+        let criticalPath = [];
+        
+        const colors = [
+            '#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6',
+            '#ec4899', '#14b8a6', '#f97316', '#6366f1', '#84cc16',
+            '#06b6d4', '#a855f7', '#eab308', '#22c55e', '#f43f5e',
+            '#0ea5e9', '#d946ef', '#64748b', '#fb923c', '#4ade80',
+            '#0891b2', '#c026d3', '#facc15', '#38bdf8', '#fb7185', '#94a3b8'
+        ];
+        
+        function calculateDates() {
+            tasks.forEach(task => {
+                task.earlyStart = 0;
+                task.earlyFinish = 0;
+                task.lateStart = 0;
+                task.lateFinish = 0;
+                task.slack = 0;
+            });
+
+            // Calcul au plus tôt
+            tasks.forEach(task => {
+                task.earlyFinish = task.earlyStart + task.duration;
+                
+                task.next.forEach(nextId => {
+                    const nextTask = tasks.find(t => t.id === nextId);
+                    const delay = task.delay || 0;
+                    const earlyStart = task.earlyFinish + delay;
+                    if (earlyStart > nextTask.earlyStart) {
+                        nextTask.earlyStart = earlyStart;
+                    }
+                });
+            });
+
+            tasks.forEach(task => {
+                task.earlyFinish = task.earlyStart + task.duration;
+            });
+
+            // Calcul au plus tard
+            const lastTask = tasks[tasks.length - 1];
+            lastTask.lateFinish = lastTask.earlyFinish;
+            lastTask.lateStart = lastTask.lateFinish - lastTask.duration;
+
+            for (let i = tasks.length - 2; i >= 0; i--) {
+                const task = tasks[i];
+                if (task.next.length === 0) {
+                    task.lateFinish = lastTask.lateFinish;
+                } else {
+                    task.lateFinish = Math.min(...task.next.map(nextId => {
+                        const nextTask = tasks.find(t => t.id === nextId);
+                        const delay = task.delay || 0;
+                        return nextTask.lateStart - delay;
+                    }));
+                }
+                task.lateStart = task.lateFinish - task.duration;
+                task.slack = task.lateStart - task.earlyStart;
+            }
+
+            criticalPath = tasks.filter(t => t.slack === 0).map(t => t.id);
+            
+            return lastTask.earlyFinish;
+        }
+        
+        function drawChart() {
+            const totalDuration = calculateDates();
+            const chartDiv = document.getElementById('effectifChart');
+            chartDiv.innerHTML = '';
+            
+            const width = Math.max(1200, totalDuration * 15);
+            const height = 450;
+            const margin = {top: 40, right: 40, bottom: 80, left: 60};
+            const chartWidth = width - margin.left - margin.right;
+            const chartHeight = height - margin.top - margin.bottom;
+            
+            // Calculer l'effectif pour chaque jour
+            const dailyEffectif = new Array(totalDuration + 1).fill(0);
+            const dailyTasks = {};
+            
+            for (let day = 0; day <= totalDuration; day++) {
+                dailyTasks[day] = [];
+            }
+            
+            tasks.forEach(task => {
+                for (let day = task.earlyStart; day < task.earlyStart + task.duration; day++) {
+                    dailyEffectif[day] += task.effectif;
+                    dailyTasks[day].push(task);
+                }
+            });
+            
+            const maxEffectif = Math.max(...dailyEffectif);
+            
+            // Mise à jour des stats
+            document.getElementById('maxEffectif').textContent = maxEffectif + ' pers.';
+            document.getElementById('totalDuration').textContent = totalDuration + ' jours';
+            document.getElementById('taskCount').textContent = tasks.length;
+            document.getElementById('criticalCount').textContent = criticalPath.length;
+            
+            // Créer le SVG
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('width', width);
+            svg.setAttribute('height', height);
+            svg.style.display = 'block';
+            svg.style.margin = '0 auto';
+            
+            // Grille de fond
+            for (let i = 0; i <= maxEffectif; i += 5) {
+                const y = margin.top + chartHeight - (i / maxEffectif) * chartHeight;
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', margin.left);
+                line.setAttribute('y1', y);
+                line.setAttribute('x2', margin.left + chartWidth);
+                line.setAttribute('y2', y);
+                line.setAttribute('stroke', '#e2e8f0');
+                line.setAttribute('stroke-width', i === 0 ? 2 : 1);
+                svg.appendChild(line);
+                
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', margin.left - 10);
+                text.setAttribute('y', y + 5);
+                text.setAttribute('text-anchor', 'end');
+                text.setAttribute('fill', '#64748b');
+                text.setAttribute('font-size', '12px');
+                text.setAttribute('font-weight', '600');
+                text.textContent = i;
+                svg.appendChild(text);
+            }
+            
+            // Dessiner selon la vue
+            if (currentView === 'stacked') {
+                drawStackedView(svg, dailyEffectif, dailyTasks, chartWidth, chartHeight, margin, totalDuration, maxEffectif);
+            } else {
+                drawCumulativeView(svg, dailyEffectif, chartWidth, chartHeight, margin, totalDuration, maxEffectif);
+            }
+            
+            // Axe X (jours)
+            for (let day = 0; day <= totalDuration; day += 5) {
+                const x = margin.left + (day / totalDuration) * chartWidth;
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', x);
+                line.setAttribute('y1', margin.top);
+                line.setAttribute('x2', x);
+                line.setAttribute('y2', margin.top + chartHeight);
+                line.setAttribute('stroke', '#cbd5e0');
+                line.setAttribute('stroke-width', 1);
+                line.setAttribute('stroke-dasharray', '3,3');
+                svg.appendChild(line);
+                
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', x);
+                text.setAttribute('y', margin.top + chartHeight + 25);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('fill', '#64748b');
+                text.setAttribute('font-size', '12px');
+                text.setAttribute('font-weight', '600');
+                text.textContent = `J${day}`;
+                svg.appendChild(text);
+            }
+            
+            // Labels des axes
+            const xLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            xLabel.setAttribute('x', margin.left + chartWidth / 2);
+            xLabel.setAttribute('y', height - 20);
+            xLabel.setAttribute('text-anchor', 'middle');
+            xLabel.setAttribute('fill', '#1e3c72');
+            xLabel.setAttribute('font-size', '14px');
+            xLabel.setAttribute('font-weight', '700');
+            xLabel.textContent = 'Jours';
+            svg.appendChild(xLabel);
+            
+            const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            yLabel.setAttribute('x', -height / 2);
+            yLabel.setAttribute('y', 20);
+            yLabel.setAttribute('text-anchor', 'middle');
+            yLabel.setAttribute('fill', '#1e3c72');
+            yLabel.setAttribute('font-size', '14px');
+            yLabel.setAttribute('font-weight', '700');
+            yLabel.setAttribute('transform', 'rotate(-90)');
+            yLabel.textContent = 'Effectif (personnes)';
+            svg.appendChild(yLabel);
+            
+            chartDiv.appendChild(svg);
+            
+            // Légende
+            drawLegend();
+        }
+        
+        function drawStackedView(svg, dailyEffectif, dailyTasks, chartWidth, chartHeight, margin, totalDuration, maxEffectif) {
+            const barWidth = chartWidth / totalDuration;
+            
+            for (let day = 0; day < totalDuration; day++) {
+                const tasksOnDay = dailyTasks[day];
+                let currentHeight = 0;
+                
+                tasksOnDay.forEach(task => {
+                    const taskHeight = (task.effectif / maxEffectif) * chartHeight;
+                    const x = margin.left + (day / totalDuration) * chartWidth;
+                    const y = margin.top + chartHeight - currentHeight - taskHeight;
+                    
+                    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                    rect.setAttribute('x', x);
+                    rect.setAttribute('y', y);
+                    rect.setAttribute('width', barWidth * 0.9);
+                    rect.setAttribute('height', taskHeight);
+                    rect.setAttribute('fill', showCritical && criticalPath.includes(task.id) ? '#dc2626' : colors[(task.id - 1) % colors.length]);
+                    rect.setAttribute('stroke', 'white');
+                    rect.setAttribute('stroke-width', 1);
+                    rect.setAttribute('opacity', '0.85');
+                    rect.style.cursor = 'pointer';
+                    
+                    rect.addEventListener('mouseenter', (e) => showTooltip(e, task, day));
+                    rect.addEventListener('mouseleave', hideTooltip);
+                    
+                    svg.appendChild(rect);
+                    currentHeight += taskHeight;
+                });
+            }
+        }
+        
+        function drawCumulativeView(svg, dailyEffectif, chartWidth, chartHeight, margin, totalDuration, maxEffectif) {
+            const points = dailyEffectif.map((effectif, day) => {
+                const x = margin.left + (day / totalDuration) * chartWidth;
+                const y = margin.top + chartHeight - (effectif / maxEffectif) * chartHeight;
+                return `${x},${y}`;
+            }).join(' ');
+            
+            // Zone sous la courbe
+            const area = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+            const areaPoints = `${margin.left},${margin.top + chartHeight} ` + points + ` ${margin.left + chartWidth},${margin.top + chartHeight}`;
+            area.setAttribute('points', areaPoints);
+            area.setAttribute('fill', showCritical ? 'rgba(220, 38, 38, 0.2)' : 'rgba(59, 130, 246, 0.2)');
+            svg.appendChild(area);
+            
+            // Ligne
+            const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+            polyline.setAttribute('points', points);
+            polyline.setAttribute('fill', 'none');
+            polyline.setAttribute('stroke', showCritical ? '#dc2626' : '#3b82f6');
+            polyline.setAttribute('stroke-width', 3);
+            svg.appendChild(polyline);
+            
+            // Points
+            dailyEffectif.forEach((effectif, day) => {
+                const x = margin.left + (day / totalDuration) * chartWidth;
+                const y = margin.top + chartHeight - (effectif / maxEffectif) * chartHeight;
+                
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', x);
+                circle.setAttribute('cy', y);
+                circle.setAttribute('r', 4);
+                circle.setAttribute('fill', showCritical ? '#dc2626' : '#3b82f6');
+                circle.setAttribute('stroke', 'white');
+                circle.setAttribute('stroke-width', 2);
+                circle.style.cursor = 'pointer';
+                
+                circle.addEventListener('mouseenter', (e) => {
+                    const tooltip = document.getElementById('tooltip');
+                    tooltip.innerHTML = `<strong>Jour ${day}</strong><br>Effectif total: ${effectif} personnes`;
+                    tooltip.style.left = e.pageX + 15 + 'px';
+                    tooltip.style.top = e.pageY + 15 + 'px';
+                    tooltip.classList.add('show');
+                });
+                circle.addEventListener('mouseleave', hideTooltip);
+                
+                svg.appendChild(circle);
+            });
+        }
+        
+        function drawLegend() {
+            const legend = document.getElementById('taskLegend');
+            legend.innerHTML = '';
+            
+            tasks.forEach(task => {
+                const item = document.createElement('div');
+                item.className = 'legend-item';
+                
+                const colorBox = document.createElement('div');
+                colorBox.className = 'legend-color';
+                colorBox.style.backgroundColor = colors[(task.id - 1) % colors.length];
+                
+                const text = document.createElement('div');
+                text.className = 'legend-text';
+                text.innerHTML = `T${String(task.id).padStart(2, '0')}: ${task.name}`;
+                
+                if (criticalPath.includes(task.id)) {
+                    const badge = document.createElement('span');
+                    badge.className = 'critical-badge';
+                    badge.textContent = 'CRITIQUE';
+                    text.appendChild(badge);
+                }
+                
+                item.appendChild(colorBox);
+                item.appendChild(text);
+                legend.appendChild(item);
+            });
+        }
+        
+        function showTooltip(e, task, day) {
+            const tooltip = document.getElementById('tooltip');
+            tooltip.innerHTML = `
+                <strong>T${String(task.id).padStart(2, '0')}: ${task.name}</strong><br>
+                Jour: ${day}<br>
+                Effectif: ${task.effectif} personnes<br>
+                Durée restante: ${task.earlyStart + task.duration - day} jour(s)
+                ${criticalPath.includes(task.id) ? '<br><span style="color: #fbbf24;">⚠️ TÂCHE CRITIQUE</span>' : ''}
+            `;
+            tooltip.style.left = e.pageX + 15 + 'px';
+            tooltip.style.top = e.pageY + 15 + 'px';
+            tooltip.classList.add('show');
+        }
+        
+        function hideTooltip() {
+            document.getElementById('tooltip').classList.remove('show');
+        }
+        
+        function toggleView(view) {
+            currentView = view;
+            document.getElementById('btnStacked').classList.toggle('active', view === 'stacked');
+            document.getElementById('btnCumulative').classList.toggle('active', view === 'cumulative');
+            drawChart();
+        }
+        
+        function toggleCriticalPath() {
+            showCritical = !showCritical;
+            drawChart();
+        }
+        
+        // Initialisation
+        drawChart();
+    </script>
+</body>
+</html>

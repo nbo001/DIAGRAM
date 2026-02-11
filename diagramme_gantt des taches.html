@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagramme de Gantt - Villa R+1</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Roboto:wght@400;500;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: #f1f5f9;
+        }
+        
+        .container {
+            max-width: 100%;
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6);
+            border: 2px solid #475569;
+        }
+        
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b, #ea580c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #cbd5e0;
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+            color: white;
+            border: none;
+            padding: 0.9rem 2rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.6);
+        }
+        
+        #gantt-container {
+            background: #0f172a;
+            border-radius: 16px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            border: 2px solid #334155;
+        }
+        
+        #gantt-chart {
+            min-width: 100%;
+        }
+        
+        .gantt-header {
+            display: flex;
+            margin-bottom: 1rem;
+            border-bottom: 3px solid #f59e0b;
+            padding-bottom: 0.5rem;
+        }
+        
+        .task-column {
+            width: 350px;
+            font-weight: 700;
+            color: #fbbf24;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .timeline-column {
+            flex: 1;
+            display: flex;
+            position: relative;
+        }
+        
+        .day-label {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .gantt-row {
+            display: flex;
+            margin-bottom: 0.5rem;
+            align-items: center;
+            transition: all 0.3s ease;
+            padding: 0.5rem;
+            border-radius: 8px;
+        }
+        
+        .gantt-row:hover {
+            background: rgba(245, 158, 11, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .task-info {
+            width: 350px;
+            padding-right: 1rem;
+        }
+        
+        .task-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #e2e8f0;
+            margin-bottom: 0.2rem;
+        }
+        
+        .task-id {
+            font-weight: 800;
+            color: #fbbf24;
+            margin-right: 0.5rem;
+        }
+        
+        .task-details {
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+        
+        .timeline {
+            flex: 1;
+            position: relative;
+            height: 40px;
+        }
+        
+        .task-bar {
+            position: absolute;
+            height: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+        
+        .task-bar:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+        }
+        
+        .task-bar.normal {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+        }
+        
+        .task-bar.critical {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border: 2px solid #fbbf24;
+        }
+        
+        .legend {
+            display: flex;
+            gap: 2.5rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+            padding: 1.5rem;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 12px;
+            border: 1px solid #334155;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+        
+        .legend-box {
+            width: 40px;
+            height: 25px;
+            border-radius: 6px;
+        }
+        
+        .info-panel {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(245, 158, 11, 0.1) 100%);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+            border-left: 6px solid #f59e0b;
+        }
+        
+        .info-panel h3 {
+            color: #fbbf24;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.2rem;
+        }
+        
+        .stat-item {
+            background: rgba(15, 23, 42, 0.7);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 2px solid #334155;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-item:hover {
+            border-color: #f59e0b;
+            transform: translateY(-3px);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: rgba(15, 23, 42, 0.98);
+            color: white;
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+            max-width: 320px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+            border: 2px solid #f59e0b;
+        }
+
+        .tooltip.show {
+            opacity: 1;
+        }
+
+        .tooltip strong {
+            color: #fbbf24;
+        }
+
+        .week-separator {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: rgba(148, 163, 184, 0.3);
+            pointer-events: none;
+        }
+
+        .month-label {
+            position: absolute;
+            top: -25px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #fbbf24;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Diagramme de Gantt</h1>
+        <p class="subtitle">Étude et Conception d'une Villa R+1 - Badie AYEB - PFF 2025-2026</p>
+        
+        <div class="controls">
+            <button onclick="toggleCriticalPath()">🎯 Afficher Chemin Critique</button>
+            <button onclick="zoomIn()">🔍 Zoom +</button>
+            <button onclick="zoomOut()">🔍 Zoom -</button>
+            <button onclick="resetView()">↻ Réinitialiser</button>
+        </div>
+        
+        <div id="gantt-container">
+            <div id="gantt-chart"></div>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-box" style="background: linear-gradient(135deg, #3b82f6, #2563eb);"></div>
+                <span>Tâche normale</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background: linear-gradient(135deg, #ef4444, #dc2626); border: 2px solid #fbbf24;"></div>
+                <span>Chemin critique</span>
+            </div>
+        </div>
+        
+        <div class="info-panel">
+            <h3>📊 Statistiques du Projet</h3>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-label">Durée totale du projet</div>
+                    <div class="stat-value" id="total-duration">-</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Nombre de tâches</div>
+                    <div class="stat-value">26</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Tâches critiques</div>
+                    <div class="stat-value" id="critical-tasks">-</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Effectif maximal</div>
+                    <div class="stat-value">5</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+
+    <script>
+        const tasks = [
+            {id: 1, name: "Décapage terrain", duration: 1, effectif: 1, next: [2], delay: 0},
+            {id: 2, name: "Fouilles puits/rigoles", duration: 1, effectif: 2, next: [3], delay: 0},
+            {id: 3, name: "Gros béton", duration: 1, effectif: 3, next: [4], delay: 0},
+            {id: 4, name: "Béton propreté", duration: 1, effectif: 3, next: [5], delay: 0},
+            {id: 5, name: "B.A fondation", duration: 3, effectif: 3, next: [6], delay: 0},
+            {id: 6, name: "Chape armée", duration: 6, effectif: 5, next: [7], delay: 0},
+            {id: 7, name: "B.A élév. RDC", duration: 6, effectif: 5, next: [8], delay: 0},
+            {id: 8, name: "Plancher RDC", duration: 15, effectif: 5, next: [9], delay: 3},
+            {id: 9, name: "Escalier RDC", duration: 2, effectif: 5, next: [10], delay: 0},
+            {id: 10, name: "B.A élév. étage", duration: 6, effectif: 5, next: [11], delay: 0},
+            {id: 11, name: "Plancher étage", duration: 12, effectif: 5, next: [12], delay: 3},
+            {id: 12, name: "Escalier étage", duration: 2, effectif: 5, next: [13], delay: 0},
+            {id: 13, name: "Maçonnerie", duration: 30, effectif: 5, next: [14], delay: -15},
+            {id: 14, name: "Enduit intérieur", duration: 30, effectif: 5, next: [15], delay: -5},
+            {id: 15, name: "Enduit extérieur", duration: 15, effectif: 5, next: [16], delay: 7},
+            {id: 16, name: "Pose Staff", duration: 30, effectif: 2, next: [17], delay: 3},
+            {id: 17, name: "Acrotère", duration: 2, effectif: 2, next: [18], delay: 0},
+            {id: 18, name: "Étanchéité", duration: 1, effectif: 3, next: [19], delay: 0},
+            {id: 19, name: "Forme de pente", duration: 1, effectif: 3, next: [20], delay: 0},
+            {id: 20, name: "Revêtement", duration: 30, effectif: 5, next: [21], delay: -10},
+            {id: 21, name: "Seuils/appuis", duration: 1, effectif: 4, next: [22], delay: 0},
+            {id: 22, name: "Menuiserie pose", duration: 3, effectif: 4, next: [23, 24], delay: 0},
+            {id: 23, name: "Électricité", duration: 8, effectif: 4, next: [25], delay: 0},
+            {id: 24, name: "Plomberie", duration: 6, effectif: 4, next: [25], delay: 0},
+            {id: 25, name: "Peinture", duration: 35, effectif: 4, next: [26], delay: 0},
+            {id: 26, name: "Nettoyage", duration: 3, effectif: 2, next: [], delay: 0}
+        ];
+
+        let showCritical = false;
+        let currentScale = 1;
+        let criticalPath = [];
+        let dayWidth = 8; // pixels par jour
+        
+        function calculateDates() {
+            tasks.forEach(task => {
+                task.earlyStart = 0;
+                task.earlyFinish = 0;
+                task.lateStart = 0;
+                task.lateFinish = 0;
+                task.slack = 0;
+            });
+
+            // Calcul au plus tôt
+            tasks.forEach(task => {
+                task.earlyFinish = task.earlyStart + task.duration;
+                
+                task.next.forEach(nextId => {
+                    const nextTask = tasks.find(t => t.id === nextId);
+                    const delay = task.delay || 0;
+                    const earlyStart = task.earlyFinish + delay;
+                    if (earlyStart > nextTask.earlyStart) {
+                        nextTask.earlyStart = earlyStart;
+                    }
+                });
+            });
+
+            tasks.forEach(task => {
+                task.earlyFinish = task.earlyStart + task.duration;
+            });
+
+            // Calcul au plus tard
+            const lastTask = tasks[tasks.length - 1];
+            lastTask.lateFinish = lastTask.earlyFinish;
+            lastTask.lateStart = lastTask.lateFinish - lastTask.duration;
+
+            for (let i = tasks.length - 2; i >= 0; i--) {
+                const task = tasks[i];
+                if (task.next.length === 0) {
+                    task.lateFinish = lastTask.lateFinish;
+                } else {
+                    task.lateFinish = Math.min(...task.next.map(nextId => {
+                        const nextTask = tasks.find(t => t.id === nextId);
+                        const delay = task.delay || 0;
+                        return nextTask.lateStart - delay;
+                    }));
+                }
+                task.lateStart = task.lateFinish - task.duration;
+                task.slack = task.lateStart - task.earlyStart;
+            }
+
+            criticalPath = tasks.filter(t => t.slack === 0).map(t => t.id);
+            
+            return lastTask.earlyFinish;
+        }
+
+        function drawGantt() {
+            const totalDuration = calculateDates();
+            const chart = document.getElementById('gantt-chart');
+            chart.innerHTML = '';
+            
+            // Header
+            const header = document.createElement('div');
+            header.className = 'gantt-header';
+            
+            const taskCol = document.createElement('div');
+            taskCol.className = 'task-column';
+            taskCol.textContent = 'Tâches';
+            
+            const timelineCol = document.createElement('div');
+            timelineCol.className = 'timeline-column';
+            
+            // Labels de jours
+            for (let i = 0; i <= totalDuration; i += 5) {
+                const dayLabel = document.createElement('div');
+                dayLabel.className = 'day-label';
+                dayLabel.style.position = 'absolute';
+                dayLabel.style.left = `${i * dayWidth}px`;
+                dayLabel.textContent = `J${i}`;
+                timelineCol.appendChild(dayLabel);
+            }
+            
+            // Séparateurs de semaine
+            for (let i = 7; i <= totalDuration; i += 7) {
+                const separator = document.createElement('div');
+                separator.className = 'week-separator';
+                separator.style.left = `${i * dayWidth}px`;
+                timelineCol.appendChild(separator);
+            }
+            
+            header.appendChild(taskCol);
+            header.appendChild(timelineCol);
+            chart.appendChild(header);
+            
+            // Rows pour chaque tâche
+            tasks.forEach(task => {
+                const row = document.createElement('div');
+                row.className = 'gantt-row';
+                
+                const taskInfo = document.createElement('div');
+                taskInfo.className = 'task-info';
+                taskInfo.innerHTML = `
+                    <div class="task-name">
+                        <span class="task-id">T${String(task.id).padStart(2, '0')}</span>
+                        ${task.name}
+                    </div>
+                    <div class="task-details">
+                        Durée: ${task.duration}j | Effectif: ${task.effectif} | 
+                        Marge: ${task.slack}j
+                    </div>
+                `;
+                
+                const timeline = document.createElement('div');
+                timeline.className = 'timeline';
+                
+                const taskBar = document.createElement('div');
+                taskBar.className = `task-bar ${showCritical && criticalPath.includes(task.id) ? 'critical' : 'normal'}`;
+                taskBar.style.left = `${task.earlyStart * dayWidth}px`;
+                taskBar.style.width = `${task.duration * dayWidth}px`;
+                taskBar.textContent = `${task.duration}j`;
+                
+                taskBar.addEventListener('mouseenter', (e) => showTooltip(e, task));
+                taskBar.addEventListener('mouseleave', hideTooltip);
+                
+                timeline.appendChild(taskBar);
+                
+                row.appendChild(taskInfo);
+                row.appendChild(timeline);
+                chart.appendChild(row);
+            });
+        }
+
+        function showTooltip(e, task) {
+            const tooltip = document.getElementById('tooltip');
+            tooltip.innerHTML = `
+                <strong>Tâche ${String(task.id).padStart(2, '0')}: ${task.name}</strong><br><br>
+                📅 <strong>Début:</strong> Jour ${task.earlyStart}<br>
+                📅 <strong>Fin:</strong> Jour ${task.earlyFinish}<br>
+                ⏱️ <strong>Durée:</strong> ${task.duration} jour(s)<br>
+                👥 <strong>Effectif:</strong> ${task.effectif} personne(s)<br>
+                📊 <strong>Marge:</strong> ${task.slack} jour(s)<br>
+                ${task.slack === 0 ? '<br><span style="color: #fbbf24;">⚠️ TÂCHE CRITIQUE</span>' : ''}
+            `;
+            tooltip.style.left = e.pageX + 20 + 'px';
+            tooltip.style.top = e.pageY + 20 + 'px';
+            tooltip.classList.add('show');
+        }
+
+        function hideTooltip() {
+            document.getElementById('tooltip').classList.remove('show');
+        }
+
+        function toggleCriticalPath() {
+            showCritical = !showCritical;
+            drawGantt();
+        }
+
+        function zoomIn() {
+            dayWidth *= 1.3;
+            drawGantt();
+        }
+
+        function zoomOut() {
+            dayWidth /= 1.3;
+            drawGantt();
+        }
+
+        function resetView() {
+            dayWidth = 8;
+            drawGantt();
+        }
+
+        // Initialisation
+        const totalDuration = calculateDates();
+        document.getElementById('total-duration').textContent = totalDuration + ' jours';
+        document.getElementById('critical-tasks').textContent = criticalPath.length + ' tâches';
+        drawGantt();
+    </script>
+</body>
+</html>
